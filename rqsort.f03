@@ -5,21 +5,30 @@ program quicksort
 
     integer, allocatable :: arr(:)
     integer :: n
+    real(8) :: start_time, end_time, elapsed_time
 
     call readUnsorted(arr)
 
     n = size(arr)
 
+    call cpu_time(start_time)
     call quick_sort(arr, 1, n)
+    call cpu_time(end_time)
 
     call writeSorted(arr)
+
+    ! Calculate the elapsed time in seconds
+    elapsed_time = end_time - start_time
+
+    ! Display the elapsed time
+    print *, "recursive quicksort took", elapsed_time, " seconds to run"
 
 contains
 
     recursive subroutine quick_sort(arr, low, high)
         integer, intent(inout) :: arr(:)
         integer, intent(in) :: low, high
-        integer :: pivot, i, j, temp
+        integer :: pivot
 
         if (low < high) then
             pivot = partition(arr, low, high)

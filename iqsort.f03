@@ -61,14 +61,23 @@ program iqsort
   implicit none
   integer, allocatable :: a(:)
   integer :: n
+  real(8) :: start_time, end_time, elapsed_time
 
   call readUnsorted(a)
 
   n = size(a)
 
   ! Call iterativeQsort subroutine to sort the array
+  call cpu_time(start_time)
   call iterativeQsort(a, n)
+  call cpu_time(end_time)
 
   ! Print the sorted array
   call writeSorted(a)
+
+  ! Calculate the elapsed time in seconds
+  elapsed_time = end_time - start_time
+
+  ! Display the elapsed time
+  print *, "iterative quicksort took", elapsed_time, " seconds to run"
 end program iqsort

@@ -1,44 +1,55 @@
-module rqsort
-  use intIO
+program quicksort
+    use intIO
 
-  implicit none
+    implicit none
 
-  contains
+    integer, allocatable :: arr(:)
+    integer :: n
 
-  recursive subroutine recursiveQsort(a, l, r)
-    integer, dimension(:) :: a
-    integer :: l, r, i, j, x, w
+    call readUnsorted(arr)
 
-    if (l < r) then
-      i = l
-      j = r
-      x = a((l + r) / 2)
-      do while (i <= j)
-        do while (a(i) < x)
-          i = i + 1
-        end do
-        do while (x < a(j))
-          j = j - 1
-        end do
-        if (i <= j) then
-          w = a(i)
-          a(i) = a(j)
-          a(j) = w
-          i = i + 1
-          j = j - 1
+    n = size(arr)
+
+    call quick_sort(arr, 1, n)
+
+    call writeSorted(arr)
+
+contains
+
+    recursive subroutine quick_sort(arr, low, high)
+        integer, intent(inout) :: arr(:)
+        integer, intent(in) :: low, high
+        integer :: pivot, i, j, temp
+
+        if (low < high) then
+            pivot = partition(arr, low, high)
+            call quick_sort(arr, low, pivot - 1)
+            call quick_sort(arr, pivot + 1, high)
         end if
-      end do
-      call recursiveQsort(a, l, j)
-      call recursiveQsort(a, i, r)
-    end if
-  end subroutine recursiveQsort
+    end subroutine quick_sort
 
-  program main
-    integer, dimension(100000) :: a
+    function partition(arr, low, high) result(pivot)
+        integer :: arr(:)
+        integer, intent(in) :: low, high
+        integer :: i, j, pivot, temp
 
-    call readUnsorted(a)
-    call recursiveQsort(a, 1, size(a))
-    call writeSorted(a)
-  end program main
+        pivot = arr(high)
+        i = low - 1
 
-end module rqsort
+        do j = low, high - 1
+            if (arr(j) <= pivot) then
+                i = i + 1
+                temp = arr(i)
+                arr(i) = arr(j)
+                arr(j) = temp
+            end if
+        end do
+
+        temp = arr(i + 1)
+        arr(i + 1) = arr(high)
+        arr(high) = temp
+
+        pivot = i + 1
+    end function partition
+
+end program quicksort
